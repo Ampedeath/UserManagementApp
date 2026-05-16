@@ -1,5 +1,4 @@
 using UserManagementApp.Core.DTOs.Users;
-using UserManagementApp.Core.Models;
 
 namespace UserManagementApp.Core.Interfaces;
 

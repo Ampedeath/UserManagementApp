@@ -21,8 +21,8 @@ public class UserService : IUserService
             .AsNoTracking()
             .Select(user => new UserResponse
             {
-                Id = user.Id,
-                Username = user.Username,
+                UserId = user.UserId,
+                UserName = user.UserName,
                 Email = user.Email,
                 Role = user.Role,
                 FirstName = user.FirstName,
@@ -37,11 +37,11 @@ public class UserService : IUserService
     {
         return await _dbContext.Users
             .AsNoTracking()
-            .Where(user => user.Id == id)
+            .Where(user => user.UserId == id)
             .Select(user => new UserResponse
             {
-                Id = user.Id,
-                Username = user.Username,
+                UserId = user.UserId,
+                UserName = user.UserName,
                 Email = user.Email,
                 Role = user.Role,
                 FirstName = user.FirstName,
@@ -56,7 +56,7 @@ public class UserService : IUserService
     {
         var user = new User
         {
-            Username = request.Username,
+            UserName = request.UserName,
             Email = request.Email,
             PasswordHash = request.Password, 
             Role = request.Role,
@@ -76,14 +76,14 @@ public class UserService : IUserService
     public async Task<UserResponse?> UpdateUserAsync(int id, UpdateUserRequest request)
     {
         var existingUser = await _dbContext.Users
-            .FirstOrDefaultAsync(user => user.Id == id);
+            .FirstOrDefaultAsync(user => user.UserId == id);
 
         if (existingUser is null)
         {
             return null;
         }
 
-        existingUser.Username = request.Username;
+        existingUser.UserName = request.UserName;
         existingUser.Email = request.Email;
         existingUser.Role = request.Role;
         existingUser.FirstName = request.FirstName;
@@ -98,7 +98,7 @@ public class UserService : IUserService
     public async Task<bool> DeleteUserAsync(int id)
     {
         var user = await _dbContext.Users
-            .FirstOrDefaultAsync(user => user.Id == id);
+            .FirstOrDefaultAsync(user => user.UserId == id);
 
         if (user is null)
         {
@@ -116,8 +116,8 @@ public class UserService : IUserService
     {
         return new UserResponse
         {
-            Id = user.Id,
-            Username = user.Username,
+            UserId = user.UserId,
+            UserName = user.UserName,
             Email = user.Email,
             Role = user.Role,
             FirstName = user.FirstName,

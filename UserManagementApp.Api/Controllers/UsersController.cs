@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.HttpSys;
-using Microsoft.EntityFrameworkCore;
 using UserManagementApp.Core.DTOs.Users;
 using UserManagementApp.Core.Interfaces;
-using UserManagementApp.Core.Models;
-using UserManagementApp.Data.Database;
 
 namespace UserManagementApp.Api.Controllers;
 
@@ -13,10 +9,12 @@ namespace UserManagementApp.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private IPermissionService  _permissionService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IPermissionService permissionService)
     {
         _userService = userService;
+        _permissionService =  permissionService;
     }
 
     [HttpGet]
@@ -48,12 +46,31 @@ public class UsersController : ControllerBase
     {
         var user = await _userService.CreateUserAsync(request);
 
-        return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(GetUserById), new { id = user.UserId }, user);
     }
 
+    
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<UserResponse>> UpdateUser(int id, UpdateUserRequest request)
+    public async Task<ActionResult<UserResponse>> UpdateUser(int id, UpdateUserRequest request, [FromHeader(Name = "X-User-Id")] int currentUserId)
     {
+        if (currentUserId <= 0)
+        {
+            return Unauthorized(new
+            {
+                Message = "Missing or invalid X-User-Id header."
+            });
+        }
+        
+        var isAdmin = await _permissionService.IsAdminAsync(currentUserId);
+        
+        if (!isAdmin)
+        {
+            return StatusCode(403, new
+            {
+                Message = "You do not have permission to update users."
+            });
+        }
+        
         var user = await _userService.UpdateUserAsync(id, request);
 
         if (user is null)
@@ -68,8 +85,26 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteUser(int id)
+    public async Task<IActionResult> DeleteUser(int id, [FromHeader(Name = "X-User-Id")] int currentUserId)
     {
+        if (currentUserId <= 0)
+        {
+            return Unauthorized(new
+            {
+                Message = "Missing or invalid X-User-Id header."
+            });
+        }
+        
+        var isAdmin = await _permissionService.IsAdminAsync(currentUserId);
+        
+        if (!isAdmin)
+        {
+            return StatusCode(403, new
+            {
+                Message = "You do not have permission to delete users."
+            });
+        }
+        
         var isDeleted = await _userService.DeleteUserAsync(id);
 
         if (!isDeleted)
@@ -81,5 +116,17 @@ public class UsersController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    private bool TryGetCurrentUserId(out int userId)
+    {
+        userId = 0;
+        
+        if (!Request.Headers.TryGetValue("X-User-Id", out var value))
+        {
+            return false;
+        }
+
+        return int.TryParse(value.ToString(), out userId);
     }
 }

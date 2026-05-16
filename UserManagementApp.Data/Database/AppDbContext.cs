@@ -24,9 +24,9 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(user => user.Id);
+            entity.HasKey(user => user.UserId);
 
-            entity.Property(user => user.Username)
+            entity.Property(user => user.UserName)
                 .IsRequired()
                 .HasMaxLength(50);
 
@@ -54,7 +54,7 @@ public class AppDbContext : DbContext
             entity.Property(user => user.UpdatedAt)
                 .IsRequired(false);
 
-            entity.HasIndex(user => user.Username)
+            entity.HasIndex(user => user.UserName)
                 .IsUnique();
 
             entity.HasIndex(user => user.Email)
