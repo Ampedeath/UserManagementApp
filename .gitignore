@@ -1,3 +1,4 @@
+# Build results
 bin/
 obj/
 
@@ -5,17 +6,43 @@ obj/
 *.sln.iml
 
 .vs/
-
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
 
+# Test results
+TestResults/
+*.trx
+coverage/
+coverage.cobertura.xml
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+project.assets.json
+
+# SQLite local database files
 *.db
 *.db-shm
 *.db-wal
 *.sqlite
 *.sqlite3
 
+# Logs
 *.log
+logs/
 
+# OS files
 .DS_Store
 Thumbs.db
+
+# Environment / local config
+.env
+.env.*
+appsettings.Local.json
+appsettings.Development.local.json
+
+# Publish output
+publish/
