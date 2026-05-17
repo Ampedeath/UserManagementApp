@@ -157,13 +157,13 @@ Current user API uses DTOs:
 ## Console App
 
 The console desktop client currently supports:
--[x] Login
--[x] Role-based menu
--[x] Show users
--[x] Create user
--[x] Update user
--[x] Delete user
--[x] Logout
+- [x] Login
+- [x] Role-based menu
+- [x] Show users
+- [x] Create user
+- [x] Update user
+- [x] Delete user
+- [x] Logout
 
  Admin users can manage users. 
  Regular users have limited access.
