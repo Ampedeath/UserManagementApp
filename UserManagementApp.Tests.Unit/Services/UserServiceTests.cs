@@ -10,11 +10,13 @@ namespace UserManagementApp.Tests.Unit.Services;
 
 public class UserServiceTests
 {
+    private readonly PasswordHasher _passwordHasher = new PasswordHasher();
+    
    [Test]
    public async Task CreateUser_WithValidRequest()
    {
       await using var dbContext = CreateDbContext();
-      var userService = new UserService(dbContext);
+      var userService = new UserService(dbContext, _passwordHasher);
 
       var request = new CreateUserRequest
       {
@@ -72,7 +74,7 @@ public class UserServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var result = await userService.GetAllUsersAsync();
 
@@ -100,7 +102,7 @@ public class UserServiceTests
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
 
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var result = await userService.GetUserByIdAsync(user.UserId);
 
@@ -114,7 +116,7 @@ public class UserServiceTests
     public async Task GetUserById_WhenUserDoesNotExist_ReturnsNull()
     {
         await using var dbContext = CreateDbContext();
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var result = await userService.GetUserByIdAsync(999);
 
@@ -140,7 +142,7 @@ public class UserServiceTests
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
 
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var request = new UpdateUserRequest
         {
@@ -172,7 +174,7 @@ public class UserServiceTests
     public async Task UpdateUser_WhenUserDoesNotExist_ReturnsNull()
     {
         await using var dbContext = CreateDbContext();
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var request = new UpdateUserRequest
         {
@@ -207,7 +209,7 @@ public class UserServiceTests
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
 
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var result = await userService.DeleteUserAsync(user.UserId);
 
@@ -222,7 +224,7 @@ public class UserServiceTests
     public async Task DeleteUser_WhenUserDoesNotExist_ReturnsFalse()
     {
         await using var dbContext = CreateDbContext();
-        var userService = new UserService(dbContext);
+        var userService = new UserService(dbContext, _passwordHasher);
 
         var result = await userService.DeleteUserAsync(999);
 

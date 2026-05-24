@@ -9,10 +9,12 @@ namespace UserManagementApp.Data.Services;
 public class UserService : IUserService
 {
     private readonly AppDbContext _dbContext;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UserService(AppDbContext dbContext)
+    public UserService(AppDbContext dbContext, IPasswordHasher passwordHasher)
     {
         _dbContext = dbContext;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<List<UserResponse>> GetAllUsersAsync()
@@ -58,7 +60,7 @@ public class UserService : IUserService
         {
             UserName = request.UserName,
             Email = request.Email,
-            PasswordHash = request.Password, 
+            PasswordHash = _passwordHasher.HashPassword(request.Password),
             Role = request.Role,
             FirstName = request.FirstName,
             LastName = request.LastName,

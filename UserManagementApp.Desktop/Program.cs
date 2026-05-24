@@ -128,7 +128,7 @@ static async Task<LoginResponse?> LoginAsync(AuthApiClient authApiClient)
         var loginResult = await authApiClient.LoginAsync(userName, pass);
         if (loginResult is null)
         {
-            PrintError("Login failed. Invalid username/email or password.");
+            PrintError("Login failed. Invalid username or password.");
             return null;
         }
         
@@ -160,7 +160,7 @@ static async Task ShowUsersAsync(UserApiClient userApiClient, LoginResponse curr
         Console.WriteLine();
         
         foreach (var user in users)
-            Console.WriteLine($"{user.UserId}. {user.UserName} | {user.Email} | {user.Role}");
+            Console.WriteLine($"#{user.UserId}. {user.UserName} | {user.Email} | {user.Role}");
     }
     catch (HttpRequestException ex)
     {
@@ -192,7 +192,7 @@ static async Task CreateUserAsync(UserApiClient userApiClient, LoginResponse cur
     {
         var createdUser = await userApiClient.CreateUserAsync(request, currentUser.UserId);
         Console.WriteLine();
-        Console.WriteLine($"User created successfully: {createdUser.UserId} | {createdUser.UserName}");
+        Console.WriteLine($"User created successfully: #{createdUser.UserId} | {createdUser.UserName}");
     }
     catch (HttpRequestException ex)
     {
@@ -247,7 +247,7 @@ static async Task UpdateUserAsync(UserApiClient userApiClient, LoginResponse cur
         }
 
         Console.WriteLine();
-        Console.WriteLine($"User updated successfully: {updatedUser.UserId} | {updatedUser.UserName}");
+        Console.WriteLine($"User updated successfully: #{updatedUser.UserId} | {updatedUser.UserName}");
     }
     catch (HttpRequestException exception)
     {
