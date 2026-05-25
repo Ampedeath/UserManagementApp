@@ -20,8 +20,6 @@ coverage.cobertura.xml
 # NuGet
 *.nupkg
 packages/
-project.lock.json
-project.assets.json
 
 # SQLite local database files
 *.db
@@ -46,3 +44,10 @@ appsettings.Development.local.json
 
 # Publish output
 publish/
+
+# Rider caches
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf

@@ -38,9 +38,6 @@ public class AuthService : IAuthService
             UserName = user.UserName,
             Email = user.Email,
             Role = user.Role,
-            Message = Convert.ToBoolean(user.Role == UserRole.Admin)
-                ? $"Admin {user.UserName} successfully logged in."
-                : $"User {user.UserName} successfully logged in."
         };
     }
 }
